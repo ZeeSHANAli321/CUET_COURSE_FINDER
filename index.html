@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CUET Course/Universities Finder</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         * {
@@ -175,6 +175,7 @@
                     <th>Eligibility for the Programme</th>
                 </tr>
             </thead>
+            <small>Total Result : <span id="result">0</span></small>
             <tbody>
                 <tr>
                     <td colspan="7">
@@ -211,7 +212,7 @@
                 courseList
                     .filter(course => 
                         (name === "" || university.name.toLowerCase().includes(name.toLowerCase())) &&
-                        (subject === "" || course.Subjects.toLowerCase().includes(subject.toLowerCase())) &&
+                        (subject === "" || subject.toLowerCase().split(",").every(sub => course.Subjects.toLowerCase().includes(sub.trim()))) &&
                         (degree === "" || course.Degree.toLowerCase().includes(degree.toLowerCase())) &&
                         (type === "" || university.type.toLowerCase().includes(type.toLowerCase()))
                     )
@@ -238,11 +239,17 @@
     const populate_table = (filteredData)=>{
             const tbody = document.querySelector("tbody"); // Get the tbody element
             tbody.innerHTML = ""; // Clear existing table data
+            const result = document.querySelector("#result");
+            result.innerHTML=`${filteredData.length}`;
             let rowNumber = 1
 
             filteredData.forEach(item => {
                 const row = document.createElement("tr");
+                row.setAttribute("title","More Detail")
                 row.classList.add("cuet-table-row");
+                row.addEventListener("click", function() {
+                    window.open(item["redirectLink"], "_blank");
+                });
 
                 row.innerHTML = `
                     <td class="sno-column">${rowNumber++}</td>
